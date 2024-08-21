@@ -65,3 +65,13 @@ $`
 
   $` K_k = P_k^-\cdot H_k^T(H_k \cdot P_k^-\cdot H_k^T + R_k )^{-1} `$
 
+- Updating the State vector after the measurement:
+
+  $` x_k^+ =K_k(z_k - \hat{z}_k) =K_k(z_k - \begin{bmatrix}
+  C_n^{\text{ }b-} \cdot f_k^{\text{ }n} \\
+    C_n^{\text{ }b-} \cdot M_k^{\text{ }n}
+\end{bmatrix})`$
+
+- Updating the covariance matrix of the state vector:
+
+  $` P_k^+ = (I - K_k\cdot H_k)P_k^- (I - K_k\cdot H_k)^T + K_k\cdot R_k \cdot K_k^T `$
