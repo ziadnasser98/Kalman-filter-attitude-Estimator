@@ -19,17 +19,20 @@ $$x_k = F_k \cdot x_{k-1} + G_{k} \cdot w_k$$
 Where:
 
 $$
-F_k = \exp(\Delta t \cdot \begin{pmatrix}
-0 & -\omega_3 & \omega_2 \\
-\omega_3 & 0 & -\omega_1 \\
+\begin{equation}
+F_k = \exp\left(\Delta t \cdot \begin{pmatrix}
+0 & -\omega_3 & \omega_2 \\\
+\omega_3 & 0 & -\omega_1 \\\
 -\omega_2 & \omega_1 & 0
-\end{pmatrix})
+\end{pmatrix}\right)
+\end{equation}
 $$
+
 
 $$ G_k = \frac{-\Delta t}{2} \cdot I_{3\times 3}
 $$
 
-$` \Delta t`$ is the time difference between each two consecutive readings and $` \omega_k =(\omega_1,\omega_2,\omega_3)`$ is the gyroscope reading at time step number $k$.
+$` \Delta t`$ is the time difference between each two consecutive readings and $` \omega_k =(\omega_1,\omega_2,\omega_3)`$ is the gyroscope reading at time step number $k$. $` w_k`$ is the state model noise with Gaussian distribution $`\sim \mathcal{N}(0,\,Q_k)\,`$.
 
 The measurement equation of the system is defined as follows:
 
@@ -46,16 +49,18 @@ H_k = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-$`C_n^{\text{ }b-}`$ is the Rotation matrix from the NED frame to the body frame calculated from our gyroscope reading. $`f_k^{\text{ }n}`$ the gravity vector in the NED frame. $`M_k^{\text{ }n}`$ the magnetic field vector in the NED frame. Finally, the notation $` \begin{bmatrix} x \times \end{bmatrix}`$ is the skew-symmetric matrix of the vector $`x`$.
+$`C_n^{\text{ }b-}`$ is the Rotation matrix from the NED frame to the body frame calculated from our gyroscope reading. $`f_k^{\text{ }n}`$ the gravity vector in the NED frame. $`M_k^{\text{ }n}`$ the magnetic field vector in the NED frame. Finally, the notation $` \begin{bmatrix} x \times \end{bmatrix}`$ is the skew-symmetric matrix of the vector $`x`$. $`v_k`$ is the measurments noise with Gaussian distribution $`\sim \mathcal{N}(0,\,R_k)\,`$.
 
 ### Algorithm steps:
 
 - Estimating the quaternion -prior estimation- using Gyroscope reading (Prediction stage):
 
+  $`
+ \bar{q}_k^{-} = \exp(\frac{\Delta t}{2} \cdot \Omega(\omega_{k-1})) \cdot \bar{q}_{k-1}^+
+ `$
 
-$`
-\bar{q}_k^{-} = \exp(\frac{\Delta t}{2} \cdot \Omega(\omega_{k-1})) \cdot \bar{q}_{k-1}^+
-`$
+
+ 
 
 - Estimating covariance matrix of the state vector:
 
@@ -75,3 +80,12 @@ $`
 - Updating the covariance matrix of the state vector:
 
   $` P_k^+ = (I - K_k\cdot H_k)P_k^- (I - K_k\cdot H_k)^T + K_k\cdot R_k \cdot K_k^T `$
+
+- Updating the quaternion -posterior estimation-:
+  
+  $`\bar{q}_k^{+} = \bar{q}_k^{-} + \begin{bmatrix} rel(\bar{q}_k^{-}) \cdot I_{3\times 3} \\ -Im(\bar{q}_k^{-})^T\end{bmatrix} \cdot x_k^+`$
+
+## Description:
+Each method folder contains the following files:
+- method_function.m: contains the main function of the algorithm. It takes as parameters the inputs of the algorithm and perform one iteration producing the attitude according to the representation of the algorithm.
+- estimate_code.m: Use the method_function.m function to performe attitude estiamtion on IMU sensor data and visualize the result. It can be adjusted to load the data you need to perform attitude estimation 
