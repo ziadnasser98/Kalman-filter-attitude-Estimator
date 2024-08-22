@@ -1,6 +1,34 @@
 # Kalman-filter-attitude-Estimator
 An Implementation of three algorithms for Estimating the Attitude of a rigid body from IMU sensor data depending on Kalman filter.
 
+## Description:
+Each method folder contains the following files:
+- method_function.m: contains the main function of the algorithm. It takes as parameters the algorithm's inputs and performs one iteration producing the attitude according to the representation of the algorithm.
+- estimate_code.m: Use the method_function.m function to estimate attitude on IMU sensor data and visualize the result. It can be adjusted to load the data you need for attitude estimation.
+- a2A.m: function takes a 3d vector as input and returns the skew-symmetric matrix of this vector.
+- Omega_Big.m: function takes as an input a 3d vector $`x`$ and returns the matrix:
+
+
+$$
+  \left(\begin{matrix}
+  0 & -x_3 & x_2 & x_1 \\
+  x_3 & 0 & -x_1 & x_2 \\
+  -x_2 & x_1 & 0 & x_3 \\
+  -x_1 & -x_2 & -x_3 & 0
+  \end{matrix}\right)
+$$
+
+- TETA_BIG.m: function takes as an input a quaternion $`q`$ and returns the matrix:
+
+$$
+  \left(\begin{matrix}
+  q_4 & -q_3 & q_2  \\
+  q_3 & q_4 & -q_1  \\
+  -q_2 & q_1 & q_4  \\
+  -q_1 & -q_2 & -q_3 
+  \end{matrix}\right)
+$$
+
 ## the first method
 This method uses unit quaternions as a representation of the attitude of the rigid body. 
 
@@ -85,7 +113,3 @@ $`C_n^{\text{ }b-}`$ is the Rotation matrix from the NED frame to the body frame
   
   $`\bar{q}_k^{+} = \bar{q}_k^{-} + \begin{bmatrix} rel(\bar{q}_k^{-}) \cdot I_{3\times 3} \\ -Im(\bar{q}_k^{-})^T\end{bmatrix} \cdot x_k^+`$
 
-## Description:
-Each method folder contains the following files:
-- method_function.m: contains the main function of the algorithm. It takes as parameters the inputs of the algorithm and perform one iteration producing the attitude according to the representation of the algorithm.
-- estimate_code.m: Use the method_function.m function to performe attitude estiamtion on IMU sensor data and visualize the result. It can be adjusted to load the data you need to perform attitude estimation 
