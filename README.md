@@ -113,3 +113,62 @@ $`C_n^{\text{ }b-}`$ is the Rotation matrix from the NED frame to the body frame
   
   $`\bar{q}_k^{+} = \bar{q}_k^{-} + \begin{bmatrix} rel(\bar{q}_k^{-}) \cdot I_{3\times 3} \\ -Im(\bar{q}_k^{-})^T\end{bmatrix} \cdot x_k^+`$
 
+## The second method
+This method aims to separate the external acceleration applied to the rigid body from the accelerometer sensor reading. Consequently, the only component left in the accelerometer reading is the gravity field vector. The prediction stage of this method uses the gyroscope readings as the system model like the first method. But in this method, we use Euler angles instead of unit quaternions to represent the attitude and we only care about the roll and pitch angles. The yaw angle will not be estimated since the magnetometer sensor is not involved in this method.
+
+The state vector is $`x_k = [g_k^b a_k^b]`$. Where $`g_k^b`$ is the gravity field vector at time step $`k`$ expressed in the body frame and $`a_k^b`$ is the external acceleration applied to the rigid body at time step $`k`$ expressed in the body frame. 
+
+The state equation of the system is as follows:
+
+$$
+x_k = F_k \cdot x_{k-1} + G_k \cdot w_k
+$$
+
+Where:
+
+$$
+F_k = \begin{pmatrix} 
+\exp (-\Delta t [\omega_k \times]) & 0_{3\times 3} \\
+0_{3\times 3} & c_a \cdot I_{3\times 3} 
+\end{pmatrix}
+$$
+
+$$
+G_k = \begin{pmatrix} 
+ -\Delta t [g_{k-1}^b \times]) & 0_{3\times 3} \\
+0_{3\times 3} &  I_{3\times 3} 
+\end{pmatrix}
+$$
+
+$` \Delta t`$ is the time difference between each two consecutive readings and $` \omega_k =(\omega_1,\omega_2,\omega_3)`$ is the gyroscope reading at time step number $k$. $` w_k`$ is the state model noise with Gaussian distribution $`\sim \mathcal{N}(0,\,Q_k)\,`$. $`c_a`$ is a coefficient between 0 and 1 used to model the external acceleration of the rigid body depending on the Gauss-Markov model.
+
+The measurement equation of the system is defined as follows:
+
+$$
+z_k = H_k \cdot x_k + v_k
+$$
+
+Where:
+
+$$
+H_k = [-I_{3 \times 3} -I_{3 \times 3}]
+$$
+
+$`v_k`$ is the measurments noise with Gaussian distribution $`\sim \mathcal{N}(0,\,R_k)\,`$.
+
+The Steps of this algorithm is straight forward according to the Kalman filter steps (prediction and correction). Thus I will only illustrate how to obtain the Euler angles from the state vector.
+
+Roll angle:
+
+
+$$
+\Phi = \text{atan2}(x{_2},x{_3})
+$$
+
+Pitch angle:
+
+
+$$
+\Theta = -\text{asin}\frac{-x_1}{g}
+$$
+
