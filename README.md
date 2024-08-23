@@ -1,5 +1,5 @@
 # Kalman-filter-attitude-Estimator
-An Implementation of three algorithms for Estimating the Attitude of a rigid body from IMU sensor data depending on Kalman filter.
+An Implementation of two algorithms for Estimating the Attitude of a rigid body from IMU sensor data depending on Kalman filter.
 
 ## Description:
 Each method folder contains the following files:
