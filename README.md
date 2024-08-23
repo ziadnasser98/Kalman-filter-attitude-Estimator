@@ -10,13 +10,14 @@ Each method folder contains the following files:
 
 
 $$
-  \left(\begin{matrix}
+  \begin{pmatrix}
   0 & -x_3 & x_2 & x_1 \\
   x_3 & 0 & -x_1 & x_2 \\
   -x_2 & x_1 & 0 & x_3 \\
   -x_1 & -x_2 & -x_3 & 0
-  \end{matrix}\right)
+  \end{pmatrix}
 $$
+
 
 - TETA_BIG.m: function takes as an input a quaternion $`q`$ and returns the matrix:
 
@@ -172,3 +173,5 @@ $$
 \Theta = -\text{asin}\frac{-x_1}{g}
 $$
 
+For a detailed explanation of the method look at the reference:
+Fourati, Hassen, and Djamel Eddine Chouaib Belkhiat. Multisensor attitude estimation: fundamental concepts and applications. CRC Press, 2016.
